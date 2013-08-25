@@ -13,20 +13,82 @@ function displayErrorMessage(id, message) {
 }
 
 function isNotEmpty(id, type) {
-    debugger;
-    var value;
+    var value = getValueByTypeAndID(id, type);
+    hideErrorMessage(id);
+    if (value == null || value == "") {
+        displayErrorMessage(id, "* This question is required");
+        return false;
+    }
+    return true;
+}
+
+function getValueByTypeAndID(id, type) {
+    var value = "";
     switch (type) {
         case "radio":
             value = $('input[name=' + id + ']:checked').val();
-            break
+            break;
+        case "textarea":
+            value = $("#" + id).text();
+            break;
         default:
             value = $("#" + id).val();
             break;
     }
+    return value;
+}
+
+function meetsLengthRequirements(id, type, min, max) {
+    var value = getValueByTypeAndID(id, type);
     hideErrorMessage(id);
-    if (value == "" || value == null) {
-        displayErrorMessage(id, "* This question is required");
+    if (value.length < min) {
+        displayErrorMessage(id, "* must be at least " + min + " characters");
         return false;
+    } else if (value.length > max) {
+        displayErrorMessage(id, "* cannot be more than " + max + " characters");
+        return false;
+    }
+    return true;
+}
+
+function meetsWholeNumberRequirements(id, min, max) {
+    var val = getValueByTypeAndID(id, "wholeNumber");
+    val = parseInt(val);
+    hideErrorMessage(id);
+    if (isNaN(val)) {
+        displayErrorMessage(id, "* must be a whole number");
+        return false;
+    } else if (min != "") {
+        if (val < min) {
+            displayErrorMessage(id, "* must be at least " + min);
+            return false;
+        }
+    } else if (max != "") {
+        if (val > max) {
+            displayErrorMessage(id, "* cannot be more than " + max);
+            return false;
+        }
+    }
+    return true;
+}
+
+function meetsDecimalNumberRequirements(id, min, max) {
+    var val = getValueByTypeAndID(id, "decimalNumber");
+    val = parseFloat(val);
+    hideErrorMessage(id);
+    if (isNaN(val)) {
+        displayErrorMessage(id, "* must be a number");
+        return false;
+    } else if (min != "") {
+        if (val < min) {
+            displayErrorMessage(id, "* must be at least " + min);
+            return false;
+        }
+    } else if (max != "") {
+        if (val > max) {
+            displayErrorMessage(id, "* cannot be more than " + max);
+            return false;
+        }
     }
     return true;
 }
@@ -38,39 +100,6 @@ function padDecimalPointPlaces(id, places) {
     } else {
         $("#" + id).val("");
     }
-}
-
-function meetsLengthRequirements(value, min, max) {
-    if (value.length < min) {
-        return " must be at least " + min + " characters";
-    } else if (value.length > max) {
-        return " cannot be more than " + max + " characters";
-    }
-    return "";
-}
-
-function meetsWholeNumberRequirements(value, min, max) {
-    var val = parseInt(value);
-    if (isNaN(val)) {
-        return " must be a whole number";
-    } else if (val < min) {
-        return " must be at least " + min;
-    } else if (val > max) {
-        return " cannot be more than " + max;
-    }
-    return "";
-}
-
-function meetsDecimalNumberRequirements(value, min, max) {
-    var val = parseFloat(value);
-    if (isNaN(val)) {
-        return " must be a number";
-    } else if (val < min) {
-        return " must be at least " + min;
-    } else if (val > max) {
-        return " cannot be more than " + max;
-    }
-    return "";
 }
 
 function onlyAllowNumbers() {
