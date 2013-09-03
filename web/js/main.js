@@ -1,11 +1,27 @@
 function validatePage1() {
-    return isNotEmpty("favoriteNumber", "radio");
+    var result = true;
+    var v1 = isNotEmpty('name', 'text');
+    result = v1 && result;
+    if (v1) {
+        result = meetsLengthRequirements('name', 'text', 5, 10) && result;
+    }
+    var v2 = isNotEmpty('age', 'wholeNumber');
+    result = v2 && result;
+    if (v2) {
+    }
+    return result;
 }
 
 function validatePage2() {
     var result = true;
-    result = isNotEmpty("favoriteNumber", "radio") && result;
-    result = isNotEmpty("whatName", "text") && result;
-    alert(result);
-    return  result;
+    var v1 = isNotEmpty('birthMonth', 'multipleChoice');
+    result = v1 && result;
+    if (v1) {
+    }
+    var v2 = isNotEmpty('weight', 'decimalNumber');
+    result = v2 && result;
+    if (v2) {
+    }
+    return result;
 }
+

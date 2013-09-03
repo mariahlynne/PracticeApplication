@@ -22,27 +22,19 @@
             <table id="mainContent">
                 <tr>
                     <td>
-                        <p id="favoriteNumberErrorMessage" class="errorText"></p>
-                        <span class="questionText">1. What is your favorite number?</span>
+                        <p id="nameErrorMessage" class="errorText"></p>
+                        <span class="questionText">1. What is your name?</span>
                         <div class="question">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="favoriteNumber" value="one">
-                                    one
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="favoriteNumber" value="two">
-                                    two
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="favoriteNumber" value="three">
-                                    three
-                                </label>
-                            </div>
+                            <input type="text" id="name" class="form-control" maxlength="10" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p id="ageErrorMessage" class="errorText"></p>
+                        <span class="questionText">2. How old are you?</span>
+                        <div class="question">
+                            <input type="text" id="age" class="form-control onlyAllowNumbers" />
                         </div>
                     </td>
                 </tr>
