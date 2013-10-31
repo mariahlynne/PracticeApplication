@@ -14,6 +14,9 @@ function displayErrorMessage(id, message) {
 
 function isNotEmpty(id, type) {
     var value = getValueByTypeAndID(id, type);
+    if (type == 'checkbox') {
+        value = $("input[type=checkbox][id^=" + id + "]:checked").length > 0 ? "true" : "false";
+    }
     hideErrorMessage(id);
     if (value == null || value == "") {
         displayErrorMessage(id, "* This question is required");
@@ -47,6 +50,21 @@ function meetsLengthRequirements(id, type, min, max) {
     } else if (value.length > max) {
         displayErrorMessage(id, "* cannot be more than " + max + " characters");
         return false;
+    }
+    return true;
+}
+
+function containsOnlyValidChars(id, type, validChars) {
+    debugger;
+    var value = getValueByTypeAndID(id, type);
+    hideErrorMessage(id);
+    if (value != undefined && value != null) {
+        for (var i = 0; i < value.length; i++) {
+            if (validChars.indexOf(value.charAt(i)) < 0) {
+                displayErrorMessage(id, "* cannot contain '" + value.charAt(i) + "'");
+                return false;
+            }
+        }
     }
     return true;
 }
@@ -99,6 +117,26 @@ function padDecimalPointPlaces(id, places) {
         $("#" + id).val(padded.toFixed(places));
     } else {
         $("#" + id).val("");
+    }
+}
+
+function showHideOtherChoiceTextbox(selectID, textID, type) {
+    var otherSelected = false;
+    switch (type) {
+        case "radio":
+            otherSelected = $("#" + selectID + "OtherChoiceSpecify").is(':checked');
+            break;
+        case "checkbox":
+            otherSelected = $("#" + selectID).is(':checked');
+            break;
+        case "dropdown":
+            otherSelected = $("#" + selectID).val() == "otherChoiceSpecify";
+            break;
+    }
+    if (otherSelected) {
+        $("#" + textID).show();
+    } else {
+        $("#" + textID).hide();
     }
 }
 
