@@ -11,7 +11,7 @@ function displayErrorMessage(id, message) {
 function isNotEmpty(id, type, isRequired) {
     var value = getValueByTypeAndID(id, type);
     if (type == 'checkbox') {
-        value = $("input[type=checkbox][id^=" + id + "]:checked").length > 0 ? "true" : "false";
+        value = $("input[type=checkbox][id^=" + id + "]:checked").length > 0 ? "true" : "";
     }
     if (value == null || value == "") {
         if (isRequired) {
@@ -51,7 +51,6 @@ function meetsLengthRequirements(id, type, min, max) {
 }
 
 function containsOnlyValidChars(id, type, validChars) {
-    debugger;
     var value = getValueByTypeAndID(id, type);
     if (value != undefined && value != null) {
         for (var i = 0; i < value.length; i++) {
@@ -136,6 +135,15 @@ function showHideOtherChoiceTextbox(selectID, textID, type) {
         $("#" + textID).show();
     } else {
         $("#" + textID).hide();
+    }
+}
+
+function validateAnswerLimit(id, limit) {
+    if ($("input[type=checkbox][id^=" + id + "]:checked").length > limit) {
+        displayErrorMessage(id, "* No more than " + limit + " answers can be selected")
+        return false;
+    } else {
+        return true;
     }
 }
 

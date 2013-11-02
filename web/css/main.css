@@ -105,3 +105,7 @@ p.errorText {
 p {
   margin: 0;
 }
+
+.textarea {
+    width: 100%;
+}
