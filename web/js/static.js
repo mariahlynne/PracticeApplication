@@ -3,23 +3,20 @@ $(document).ready(function() {
     onlyAllowDecimalNumbers();
 });
 
-function hideErrorMessage(id) {
-    $("#" + id + "ErrorMessage").hide();
-}
-
 function displayErrorMessage(id, message) {
     $("#" + id + "ErrorMessage").text(message);
     $("#" + id + "ErrorMessage").show();
 }
 
-function isNotEmpty(id, type) {
+function isNotEmpty(id, type, isRequired) {
     var value = getValueByTypeAndID(id, type);
     if (type == 'checkbox') {
         value = $("input[type=checkbox][id^=" + id + "]:checked").length > 0 ? "true" : "false";
     }
-    hideErrorMessage(id);
     if (value == null || value == "") {
-        displayErrorMessage(id, "* This question is required");
+        if (isRequired) {
+            displayErrorMessage(id, "* This question is required");
+        }
         return false;
     }
     return true;
@@ -43,7 +40,6 @@ function getValueByTypeAndID(id, type) {
 
 function meetsLengthRequirements(id, type, min, max) {
     var value = getValueByTypeAndID(id, type);
-    hideErrorMessage(id);
     if (value.length < min) {
         displayErrorMessage(id, "* must be at least " + min + " characters");
         return false;
@@ -57,7 +53,6 @@ function meetsLengthRequirements(id, type, min, max) {
 function containsOnlyValidChars(id, type, validChars) {
     debugger;
     var value = getValueByTypeAndID(id, type);
-    hideErrorMessage(id);
     if (value != undefined && value != null) {
         for (var i = 0; i < value.length; i++) {
             if (validChars.indexOf(value.charAt(i)) < 0) {
@@ -72,19 +67,21 @@ function containsOnlyValidChars(id, type, validChars) {
 function meetsWholeNumberRequirements(id, min, max) {
     var val = getValueByTypeAndID(id, "wholeNumber");
     val = parseInt(val);
-    hideErrorMessage(id);
     if (isNaN(val)) {
         displayErrorMessage(id, "* must be a whole number");
         return false;
-    } else if (min != "") {
-        if (val < min) {
-            displayErrorMessage(id, "* must be at least " + min);
-            return false;
+    } else {
+        if (min != "") {
+            if (val < min) {
+                displayErrorMessage(id, "* must be at least " + min);
+                return false;
+            }
         }
-    } else if (max != "") {
-        if (val > max) {
-            displayErrorMessage(id, "* cannot be more than " + max);
-            return false;
+        if (max != "") {
+            if (val > max) {
+                displayErrorMessage(id, "* cannot be more than " + max);
+                return false;
+            }
         }
     }
     return true;
@@ -93,19 +90,21 @@ function meetsWholeNumberRequirements(id, min, max) {
 function meetsDecimalNumberRequirements(id, min, max) {
     var val = getValueByTypeAndID(id, "decimalNumber");
     val = parseFloat(val);
-    hideErrorMessage(id);
     if (isNaN(val)) {
         displayErrorMessage(id, "* must be a number");
         return false;
-    } else if (min != "") {
-        if (val < min) {
-            displayErrorMessage(id, "* must be at least " + min);
-            return false;
+    } else {
+        if (min != "") {
+            if (val < min) {
+                displayErrorMessage(id, "* must be at least " + min);
+                return false;
+            }
         }
-    } else if (max != "") {
-        if (val > max) {
-            displayErrorMessage(id, "* cannot be more than " + max);
-            return false;
+        if (max != "") {
+            if (val > max) {
+                displayErrorMessage(id, "* cannot be more than " + max);
+                return false;
+            }
         }
     }
     return true;
@@ -153,7 +152,9 @@ function onlyAllowNumbers() {
             // Allow: Ctrl+X
             (event.keyCode == 88 && event.ctrlKey === true) ||
             // Allow: home, end, left, right
-            (event.keyCode >= 35 && event.keyCode <= 39)) {
+            (event.keyCode >= 35 && event.keyCode <= 39) ||
+            //Allow -
+            (event.keyCode == 189)) {
             // let it happen, don't do anything
             return;
         }
@@ -180,8 +181,8 @@ function onlyAllowDecimalNumbers() {
             (event.keyCode == 88 && event.ctrlKey === true) ||
             // Allow: home, end, left, right
             (event.keyCode >= 35 && event.keyCode <= 39) ||
-            // Allow: decimal point
-            (event.KeyCode == 110)) {
+            // Allow: decimal point & -
+            (event.KeyCode == 110) || (event.keyCode == 189)) {
             // let it happen, don't do anything
             return;
         }
