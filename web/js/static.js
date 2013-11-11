@@ -10,9 +10,6 @@ function displayErrorMessage(id, message) {
 
 function isNotEmpty(id, type, isRequired) {
     var value = getValueByTypeAndID(id, type);
-    if (type == 'checkbox') {
-        value = $("input[type=checkbox][id^=" + id + "]:checked").length > 0 ? "true" : "";
-    }
     if (value == null || value == "") {
         if (isRequired) {
             displayErrorMessage(id, "* This question is required");
@@ -31,9 +28,22 @@ function getValueByTypeAndID(id, type) {
         case "textarea":
             value = $("#" + id).text();
             break;
+        case "checkbox":
+            value = $("input[type=checkbox][id^=" + id + "]:checked").map(function() {
+                return this.value;
+            }).get().join(';;');
+            break;
         default:
             value = $("#" + id).val();
             break;
+    }
+    return value;
+}
+
+function getValueByTypeAndIDForDB(id, type) {
+    var value = getValueByTypeAndID(id, type);
+    if (type != "decimalNumber" && type != "wholeNumber") {
+        value = "'" + value + "'";
     }
     return value;
 }
@@ -139,11 +149,15 @@ function showHideOtherChoiceTextbox(selectID, textID, type) {
 }
 
 function validateAnswerLimit(id, limit) {
-    if ($("input[type=checkbox][id^=" + id + "]:checked").length > limit) {
-        displayErrorMessage(id, "* No more than " + limit + " answers can be selected")
-        return false;
-    } else {
+    if (limit == "unlimited") {
         return true;
+    } else {
+        if ($("input[type=checkbox][id^=" + id + "]:checked").length > limit) {
+            displayErrorMessage(id, "* No more than " + limit + " answers can be selected")
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
