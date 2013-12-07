@@ -17,7 +17,6 @@ public class Servlet extends HttpServlet {
     HttpSession session;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("in the servlet");
         session = request.getSession(true);
         String sRequest = request.getParameter("requestType");
         JSONObject o;
@@ -35,13 +34,14 @@ public class Servlet extends HttpServlet {
                 handleColumns(request);
                 //Insert record into db
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "root", "password");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/survey_application_generator", "root", "password");
                 Statement st = con.createStatement();
                 String sColumns = session.getAttribute("sColumns").toString();
                 String sValues = session.getAttribute("sValues").toString();
                 sColumns = sColumns.substring(0, sColumns.length() - 2);
                 sValues = sValues.substring(0, sValues.length() - 2);
-                String sql = "INSERT INTO `mydb`.`" + request.getParameter("appName").toString().trim() + "` (" + sColumns + ") VALUES (" + sValues + ");";
+                String dbName = request.getParameter("appName").toString().trim().replace(" ", "_");
+                String sql = "INSERT INTO `" + dbName + "`.`" + dbName + "` (" + sColumns + ") VALUES (" + sValues + ");";
                 System.out.println(sql);
                 st.execute(sql);
                 session.invalidate();
